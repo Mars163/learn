@@ -1,0 +1,727 @@
+Linux基本命令
+http://blog.csdn.net/ljianhui/article/details/11100625/
+http://www.cnblogs.com/gaojun/p/3359355.html
+http://www.daniubiji.cn/archives/25
+
+cd 切换目录
+“.”表示当前目录，“..”表示上一层目录，“/”表示层间隔
+比如：cd /home/user 切换到从根目录起的/home/user目录（绝对路径）
+cd ./path 和 cd path/ 都是进入当前目录的path文件夹下（相对路径）
+cd ../path 进入上层目录的path文件夹（相对路径）
+cd 或 cd ~ 进入当前User的 home directory 
+
+ls 列出目录下的内容信息
+-l 列出文件的具体信息（展示信息：total占用总空间，类型权限、硬链接数、用户、组、大小B、修改时间、名称）ls -l 别名 ll 但会输出所有文件包括隐藏文件
+-a 列出目录下的一切文件，包含以 . 开头的隐含文件
+-d ：仅列出目录本身，而不是列出目录的文件数据（比如-dl，展示本目录的信息，不展示目录下的内容信息）
+-h ：将文件容量以较易读的方式（GB，kB等）列出来（附加到其他命令）
+-R ：连同子目录的内容一起列出（递归列出），等于该目录下的所有文件都会显示出来 
+
+pwd 打印当前的工作目录
+-P：如果当前的工作路径是链接的话，显示链接的原始路径，也就是实际路径
+-L：与pwd  -P完全相反，显示链接路径
+
+mkdir 创建文件夹
+-m: 对新建目录设置存取权限,也可以用chmod命令设置
+-p: 可以是一个路径名称。若父目录不存在，则自动创建
+
+touch 创建文件或修改文件时间（也可以用vi + 文件名，然后编辑:wq）
+-a：只更新访问时间，不改变修改时间
+-c：不创建不存在的文件
+-m：只更新修改时间，不改变访问时间
+-r file： 使用文件file的时间更新文件的时间
+-t：将时间修改为参数指定的日期,如：07081556代表7月8号15点56分
+
+rm 删除一个目录中的一个或多个文件或目录
+-f, --force    忽略不存在的文件，从不给出提示。
+-i, --interactive 进行交互式删除
+-r, -R, --recursive   指示rm将参数中列出的全部目录和子目录均递归地删除
+如：
+rm -i *.log 删除任何.log文件；删除前逐一询问确认
+rm -rf test 删除test子目录及子目录中所有档案删除,并且不用一一确认
+rm -- f*  删除以-f开头的文件  
+
+rmdir 删除空文件夹
+-p 递归删除目录dirname，删除整个路径所有的文件夹
+
+mv 移动或重命名文件
+命令格式：mv [选项] 源文件或目录（可多个，以空格分隔） 目标文件或目录
+-b ：若需覆盖文件，则覆盖前先行备份。 
+-f ：force 强制的意思，如果目标文件已经存在，不会询问而直接覆盖；
+-i ：若目标文件 (destination) 已经存在时，就会询问是否覆盖！
+-t ：即指定mv的目标目录，该选项适用于移动多个源文件到一个目录的情况，此时目标目录在前，源文件在后。
+如：
+mv test.log test1.txt 文件改名
+mv dir1 dir2 如果目录dir2不存在，将目录dir1改名为dir2；否则，将dir1移动到dir2中。
+mv log1.txt log2.txt log3.txt dir1 移动多个文件
+mv -t ../dir2/ *.txt 移动多个文件
+mv -i log1.txt log2.txt 将文件file1改名为file2，如果file2已经存在，则询问是否覆盖
+mv -f log3.txt log2.txt 将文件file1改名为file2，即使file2存在，也是直接覆盖掉
+
+cp 复制（多个）文件（夹）
+-b 或 --backup   删除、覆盖目的文件先备份，备份的文件或目录亦建立为符号链接，并指向源文件或目录链接的源文件或目录。假如没有加上这个参数，在复制过程中若遇到符号链接，则会直接复制源文件或目录
+-f 或 --force       强行复制文件或目录， 不论目的文件或目录是否已经存在
+-i 或 --interactive 覆盖文件之前先询问用户
+-l 或 --link        对源文件建立硬链接，而非复制文件
+
+用户UID和组GID
+用户信息文件：  /etc/passwd
+密码文件：      /etc/shadow
+用户组文件：    /etc/group
+用户组密码文件：/etc/gshadow
+passwd格式：
+meng92.zhang:x:1010:1010:,,,:/home/meng92.zhang:/bin/bash
+账号名称:口令（显示x）:UID:GID:用户信息（如用户全名）:用户的 $HOME 目录:登录时运行的程序
+UID=0的       是超级用户
+UID=1~499     是伪用户（与系统和程序服务相关）
+UID=500~60000 为普通用户
+group格式：
+meng92.zhang:x:1010:
+组名:组密码:组ID:组成员
+
+useradd 添加用户
+useradd [-ugGdsce] 用户名
+-u UID
+-g 缺省所属用户组GID
+-G 指定用户属于多个组
+-d 宿主目录
+-s 命令解析器Shell
+-c 描述信息
+-e 指定用户失效时间
+
+passwd 为用户设置密码
+passwd 用户名
+
+userdel 删除用户
+userdel [-r] 用户名 （-r 删除用户的宿主目录）
+
+usermod 修改用户名
+usermod -l 新用户名 旧用户名
+
+su 切换用户
+su [options] [username]
+参数说明：
+-c command 或 --command=command 变更为帐号为 USER 的使用者并执行指令（command）后再变回原来使用者
+- 或 -l 或 --login 使用该参数切换用户时会重新加载配置文件，就像第一次登录一样。不然只是修改userid
+-s shell 或 --shell=shell 指定要执行的 shell （bash csh tcsh 等），预设值为 /etc/passwd 内的该使用者（USER） shell
+-m -p 或 --preserve-environment 执行 su 时不改变环境变数
+
+sudo 以系统管理者的身份执行指令（使用权限：在 /etc/sudoers 中有出现的使用者）
+sudo -h | -K | -k | -V
+sudo [OPTIONS] [command]
+参数说明：
+sudo -h     列出使用方法，退出（Help）。
+sudo -V     显示版本信息，并退出（Version）。
+sudo -l     列出当前用户可以执行的命令（List）。只有在sudoers里的用户才能使用该选项。
+sudo -u username#uid     以指定用户的身份执行命令（User）。后面的用户是除root以外的，可以是用户名，也可以是#uid。
+sudo -k     清除“入场卷”上的时间（Kill），下次再使用sudo时要再输入密码。
+sudo -K     与-k类似（Sure kill），但是它还要撕毁“入场卷”，也就是删除时间戳文件。
+sudo -b command     在后台执行指定的命令（Background）。
+sudo -p prompt command    可以更改询问密码的提示语（Prompt），其中%u会代换为使用者帐号名称，%h会显示主机名称。非常人性化的设计。
+sudo -e file        不是执行命令，而是修改文件，相当于命令sudoedit。
+如：
+sudo ls    以管理员身份使用ls
+sudo -u userb ls -l   以其他用户身份使用ls
+sudo !!    以root权限执行上一条命令
+
+chmod
+文件的mode：-rwxr--r--或drwxrwxr-x 十位标识，第一位标识是文件-还是文件夹d，二到四位表示文件所有者（u）的读写执行权限，没有则为-，五到七位表示同组用户（g）对文件的权限，八到十位表示其他用户（o）对文件的权限。
+第一位标识文件类型：
+-：普通文件 (f)
+d：目录文件
+b：块设备文件 (block)
+c：字符设备文件 (character)
+l：符号链接文件(symbolic link file)
+p：命令管道文件(pipe)
+s：套接字文件(socket)
+文件的mode数字表示：744或773 二进制某一位为1代表这一位所代表的权限被允许，0表示没有权限，4表示可读权限，2表示可写权限，1表示可执行权限，然后将其相加。所以数字属性的格式应为3个从0到7的八进制数，其顺序是（u）（g）（o）。
+命令：chmod [who][+|-|=][mode] 文件名 
+命令中间的选项叠加时没有空格，who可选u（属主user）|g（同组group）|o（其他otherss）|a（所有all），
++添加|-取消|=清空权限并赋予给定的权限，mode可以使用字母rwxX（只有文件可执行或为目录时才加x）也可以使用数字421也可以使用ugo表示赋予与改组用户相同的权限。[ugoa]*([-+=]([rwxXst]*|[ugo]))+|[-+=][0-7]+
+如：
+chmod a+r file1.txt  所有人加读权限
+chmod ug+w,o-w file1.txt file2.txt 本组和自己加写权限，其他人减写权限
+chmod ug=rwx,o=x file  和 chmod 771 file  都是设置自己和本组读写执行，其他执行
+文件的特殊权限SUID、SGID、SBIT：
+SUID只能作用在二进制程序上，如果原先所有者拥有x属性，则设置SUID之后，属主的x位变为s，否则变为S（-rwsr-xr-x ）。如果设置SUID位则表示，当同组或其他用户拥有该文件执行权限时，在执行的过程中是以文件属主的身份运行的（这样执行程序就可以操控属主的其他文件）。
+SGID可以作用在二进制程序上和目录上，如果原先同组用户拥有x属性，则设置SGID之后，同组的x位变为s，否则变为S（-rwx--s--x）。二进制程序设置SGID的效果与SUID类似，只不过其他用户在执行时，拥有的是该文件所在组的权限。当目录设置SGID属性时，其他用户进入该目录，则其有效群组变为该目录所在的群组，该用户在目录下创建的文件，也将属于目录所在的群组。
+SBIT只能作用在目录上，如果某一目录原先其他用户拥有x属性，则设置SBIT之后，其他用户的x位变为t，否则变为T（drwxrwxrwt）。当目录设置SBIT位之后，用户进入该目录（如果该用户对于目录有wx权限，则能在该目录建立文件和删除文件）后，只能删除自己创建的文件，不能删除其他用户创建的文件（root除外）。
+设置SUID/SGID/SBIT权限：
+数字表示法：在原先文件权限的三位之前再加一位表示特殊权限，4 为 SUID，2 为 SGID，1 为 SBIT
+符号法： SUID 为 u+s ，而 SGID 为 g+s ，SBIT 则是 o+t
+如：
+chmod 4766 file1 为file1设置SUID
+chmod g+s dir1 为dir1设置SGID
+
+man
+-f  同命令whatis ，将在whatis数据库查找以关键字开同的帮助索引信息
+-k  同命令apropos 将搜索whatis数据库，模糊查找关键字
+格式：
+粗体文字：如所显示的一样
+下划线文字：一般是类型总称，使用时要替换为具体的参数
+[OPTION] 代表这个参数可有可无，而后面的...符号代表这个OPTION是个可变长的参数，代表可以有零到任意多个OPTION参数。
+[-abc]：可以同时使用一个或多个参数
+-a|-b：不能同时使用
+此命令的快捷键：
+space（空格）/f：下一页
+b：上一页
+j/enter（回车）：下一行
+k：上一行
+d：下半页
+u：上半页
+/+字符串：从上往下查询字符串
+?+字符串：从后往前查询字符串
+n：查看下一个找到的字符串
+N：查看上一个找到的字符串
+ESC+u：取消所有搜索的高亮显示
+g/<：跳转到文件第一行
+G/>：跳转到文件最后一行
+
+ehco 打印字符串（相当于println）
+字符串能加引号，也能不加引号。用echo命令输出加引号的字符串时，将字符串原样输出；用echo命令输出不加引号的字符串时，将字符串中的各个单词作为字符串输出，各字符串之间用一个空格分割。
+-n 不要在最后自动换行
+-e 若字符串中出现以下字符，则特别加以处理，而不会将它当成一般
+   \a 发出警告声；
+   \b 删除前一个字符；
+   \c 最后不加上换行符号；
+   \f 换行但光标仍旧停留在原来的位置；
+   \n 换行且光标移至行首；
+   \r 光标移至行首，但不换行；
+   \t 插入tab；
+   \v 与\f相同；
+   \\ 插入\字符；
+   \nnn 插入nnn（八进制）所代表的ASCII字符；
+如：
+echo *          打印当前目录下所有的文件和目录
+echo *.jpeg     打印当前目录下所有的‘.jpeg’文件
+echo "Test txt" > 1.txt 将“Test txt”写入1.txt（覆盖写入）
+echo "Test txt" >> 1.txt 将“Test txt”写入1.txt（追加写入）
+echo $PATH      打印变量PATH的值
+echo ${PATH}    打印变量PATH的值
+echo ${USER}.mail 或 echo "${USER}.mail" 或 echo "$USER.mail" 打印变量USER的值再加.mail组成的字符串
+
+cat 连接多个文件或从标准输入在标准输出上输出
+-n 或 --number：由 1 开始对所有输出的行数编号。
+-b 或 --number-nonblank：和 -n 相似，只不过对于空白行不编号。
+-s 或 --squeeze-blank：当遇到有连续两行以上的空白行，就代换为一行的空白行。
+-v 或 --show-nonprinting：使用 ^ 和 M- 符号，除了 LFD 和 TAB 之外。
+-E 或 --show-ends : 在每行结束处显示 $。
+-T 或 --show-tabs: 将 TAB 字符显示为 ^I。
+-e : 等价于 -vE。
+-A, --show-all：等价于 -vET。
+-e：等价于"-vE"选项；
+-t：等价于"-vT"选项；
+如：
+cat -n textfile1 > textfile2     把 textfile1 的文档内容加上行号后输入 textfile2 这个文档里
+cat -b textfile1 textfile2 >> textfile3    把 textfile1 和 textfile2 的文档内容加上行号（空白行不加）之后将内容附加到 textfile3 文档里（注意多文件以空格分隔）
+cat > 1.txt << EOF   手动输入内容写入到1.txt文件知道输入EOF（可替换为任意字符串）结束
+
+find 在目录中查找文件
+find pathname... -options [-print -exec -ok ...]
+-print： find命令将匹配的文件输出到标准输出。
+-exec： find命令对匹配的文件执行该参数所给出的shell命令。相应命令的形式为'command' { } ;，注意{ }和；之间的空格。
+-ok： 和-exec的作用相同，只不过以一种更为安全的模式来执行该参数所给出的shell命令，在执行每一个命令之前，都会给出提示，让用户来确定是否执行。
+-options包括：
+-name：按照文件名查找文件。
+-perm：按照文件权限来查找文件。
+-prune：使用这一选项可以使find命令不在当前指定的目录中查找，如果同时使用-depth选项，那么-prune将被find命令忽略。
+-user：按照文件属主来查找文件。
+-group：按照文件所属的组来查找文件。
+-mtime -n +n：按照文件的更改时间来查找文件， - n表示文件更改时间距现在n天以内，+ n表示文件更改时间距现在n天以前。find命令还有-atime和-ctime 选项，但它们都和-m time选项。
+-nogroup：查找无有效所属组的文件，即该文件所属的组在/etc/groups中不存在。
+-nouser：查找无有效属主的文件，即该文件的属主在/etc/passwd中不存在。
+-newer file1 ! file2：查找更改时间比文件file1新但比文件file2旧的文件。
+-type：查找某一类型的文件，诸如：
+b - 块设备文件。
+d - 目录。
+c - 字符设备文件。
+p - 管道文件。
+l - 符号链接文件。
+f - 普通文件。
+-size n：[c] 查找文件长度为n块的文件，带有c时表示文件长度以字节计，其他单位如k、M、G。-depth：在查找文件时，首先查找当前目录中的文件，然后再在其子目录中查找。
+-fstype：查找位于某一类型文件系统中的文件，这些文件系统类型通常可以在配置文件/etc/fstab中找到，该配置文件中包含了本系统中有关文件系统的信息。
+-mount：在查找文件时不跨越文件系统mount点。
+-follow：如果find命令遇到符号链接文件，就跟踪至链接所指向的文件。
+-cpio：对匹配的文件使用cpio命令，将这些文件备份到磁带设备中。
+另外,下面三个的区别:
+-amin n
+查找系统中最后N分钟访问的文件
+-atime n
+查找系统中最后n*24小时访问的文件
+-cmin n
+查找系统中最后N分钟被改变文件状态的文件
+-ctime n
+查找系统中最后n*24小时被改变文件状态的文件
+-mmin n
+查找系统中最后N分钟被改变文件数据的文件
+-mtime n
+查找系统中最后n*24小时被改变文件数据的文件
+如：
+find ./ -name "test"     在当前目录（包括子目录）查找test文件（夹）
+find ./ -name "test" -type f     查找文件test
+find ./ -name \*.txt 或 "*.txt"  查找当前目录下所有的txt文件
+find ./ -empty     在当前目录下查找空的文件或目录
+find ./ -type d -print -exec ls {} \;    查找当前目录下（包括当前目录）的所有目录，并执行ls列出所有文件，如果没有-print，则不显示查到的所有目录，只显示ls的内容， -exec表示开始\;表示结束，{}表示find的内容
+find ./ -type d -ok ls {} \;    功能同上，但是每次执行ls之前都要先询问
+find ./ -user Tom    查找用户名为Tom的所有文件
+find ./ -group gg    查找所有用户所在组为gg的文件
+find ./ -size +10k   查找所有大小超过10k的文件，“-”为小于，没有“+-”为等于，单位[ckMG]
+find ./ -empty -type f -print -delete  查找空文件并删除
+find ./ -perm /644   查找权限中有644（大于等于）的所有文件，“/”可以换成“-”，“+”表示权限中含有u6或g4或o4，没有符号则需完全符合
+find ./ -newer abc   查找更新时间大于abc的文件
+find ./ -anewer abc  查找访问时间大于abc的文件
+find ./ -mtime +2    查找文件更新时间在距现在时刻二天以上（大于等于三天）的文件，“-”是小于二天，没有符号是二到三天
+
+wc 统计指定文件中的字节数、字数、行数并显示
+-c 统计字节数bytes
+-l 统计行数lines
+-m 统计字符数chars，这个标志不能与 -c 标志一起使用。
+-w 统计字数words，一个字被定义为由空白、跳格或换行字符分隔的字符串。
+-L 打印最长行的长度max-line-length
+
+vim
+快捷键：
+==移动光标==
+h/[Left]     光标左移（前面加数字表示移几次）
+j/[Down]     光标下移（前面加数字表示移几次）
+k/[Up]       光标上移（前面加数字表示移几次）
+l/[Right]    光标右移（前面加数字表示移几次）
+[Ctrl] + f	屏幕『向下』移动一页，相当于 [Page Down]按键 
+[Ctrl] + b	屏幕『向上』移动一页，相当于 [Page Up] 按键
+[Ctrl] + d	屏幕『向下』移动半页
+[Ctrl] + u	屏幕『向上』移动半页
+0/[Home]    移动到这一行的最前面字符处
+$/[End]     移动到这一行的最后面字符处
+gg   移到文本第一行
+G    移到文本最后一行（前面加数字表示移到第几行）
+[Space] 向后移一个字符（前面可加数字）
+[Enter] 向下移一行（前面可加数字）
+==搜寻==
+/word	向光标之下寻找一个名称为 word 的字符串
+?word	向光标之上寻找一个字符串名称为 word 的字符串
+n	代表『重复前一个搜寻的动作』。
+N	与 n 刚好相反，为『反向』进行前一个搜寻动作。 
+:noh    取消搜寻高亮
+==删除、复制、粘贴==
+x/[Del] 向后删除一个字符
+X/[Backspace]    向前删除一个字符
+dd      删除光标所在行（前面加数字表示删除光标之后的n行）
+yy      复制光标所在的一行（前面加数字表示复制光标之后的n行）
+p       复制到光标之后
+P       复制到光标之前
+u       复原上一个动作之前的内容（undo）
+[Ctrl]+r      重做上一个动作
+==编辑模式==
+i/I/a/A/o/O/r/R     进入编辑模式
+[Esc]   退出编辑模式
+==命令模式==
+:w      保存
+:w!     强制保存（保存到只读文件）
+:q      退出
+:wq     保存并退出
+ZZ      如果有修改则保存后退出，否则直接退出
+:w [filename]	将编辑的数据储存成另一个档案（类似另存新档）
+:r [filename]	在编辑的数据中，读入另一个档案的数据。亦即将 『filename』 这个档案内容加到光标所在行后面:set nu	显示行号，设定之后，会在每一行的前缀显示该行的行号
+:set nonu	与 set nu 相反，为取消行号！:set nu	显示行号，设定之后，会在每一行的前缀显示该行的行号
+:set nonu	与 set nu 相反，为取消行号！之后，会在每一行的前缀显示该行的行号
+:set nonu	与 set nu 相反，为取消行号！
+==区块选择==
+v	字符选择，会将光标经过的地方反白选择！
+V	行选择，会将光标经过的行反白选择！
+[Ctrl]+v	区块选择，可以用长方形的方式选择资料
+y	将反白的地方复制起来
+d	将反白的地方删除掉
+==多文档编辑==
+vim file1 file2...   开启多文档编辑
+:n	编辑下一个档案
+:N	编辑上一个档案
+:files	列出目前这个 vim 的开启的所有档案
+==窗口分割==
+:sp [filename]	开启一个新窗口，如果有加 filename， 表示在新窗口开启一个新档案，否则表示两个窗口为同一个档案内容(同步显示)。
+[ctrl]+w+ j/↓  光标移动到下方的窗口
+[ctrl]+w+ k/↑  光标移动到上面的窗口
+[ctrl]+w+ q	其实就是 :q 结束离开啦
+
+grep
+grep [OPTIONS] PATTERN [FILE...]
+主要参数：
+-c：只输出匹配行的计数。
+-I：不区分大 小写(只适用于单字符)。
+-h：查询多文件时不显示文件名。
+-l：查询多文件时只输出包含匹配字符的文件名。
+-n：显示匹配行及 行号。
+-s：不显示不存在或无匹配文本的错误信息。
+-v：显示不包含匹配文本的所有行。
+pattern正则表达式主要参数：
+\： 转义字符，与后面的字符合用表示一些特殊的字符。
+|： 或。
+^： 表示一行的开头。
+$:  表示一行的结尾。
+\<：表示单词的开始。
+\>：表示单词的结束。
+[ ]：匹配[]内的任意字符，如[Ab]即Ab符合要求 。
+[^]：以^开头是说明除了[]内的字符都可以。
+[ - ]：范围，如[A-Z]，即A、B、C一直到Z都符合要求 。
+.：所有的单个字符。
++：匹配1次或多次。
+*：匹配0次或多次。
+pattern\{n\}	用来匹配前面pattern出现次数。n为次数
+pattern\{n,\}	含义同上，但次数最少为n
+patter\{n,m\}	含义同上，但pattern出现次数在n与m之间
+[:alnum:]	字母和数字，与[A-Za-z0-9]等价
+[:word:]	[:alnum:]加上下划线_
+[:alpa:]	字母，与[A-Za-z]等价
+[:digit:]	数字，与[0-9]等价
+[:xdigit:]	十六进制字符，与[0-9A-Fa-f等价]
+[:blank:]	空格和制表符
+[:graph:]	可见字符，靠扩33~126
+[:lower:]	小写字母
+[:upper:]	大写字母
+[:print:]	可打印字符
+[:space:]	空白字符，等价于[\t\r\n\v\f]
+[:punct:]	标点符号
+[:cntrl:]	ASCII控制码，包括字符0~31以及127
+PATTERN
+使用单引号时变量按字符输出，不会输出变量的值，双引号时会输出变量的值，不加引号时遇到空格即结束但会输出变量的值
+如：
+grep ‘test’ aa bb cc    在aa，bb，cc中寻找test单词所在的行
+grep ‘[a-z]\{5\}’ aa    找出由5个小写字母组成的单词的行
+
+tree 以树状图列出目录的内容
+tree [-aACdDfFgilnNpqstux][-I <范本样式>][-P <范本样式>][目录...]
+参　　数：
+  -a   显示所有文件和目录。
+  -A   使用ASNI绘图字符显示树状图而非以ASCII字符组合。
+  -C   在文件和目录清单加上色彩，便于区分各种类型。
+  -d   显示目录名称而非内容。
+  -D   列出文件或目录的更改时间。
+  -f   在每个文件或目录之前，显示完整的相对路径名称。
+  -F   在执行文件，目录，Socket，符号连接，管道名称名称，各自加上"*","/","=","@","|"号。
+  -g   列出文件或目录的所属群组名称，没有对应的名称时，则显示群组识别码。
+  -i   不以阶梯状列出文件或目录名称。
+  -I<范本样式>   不显示符合范本样式的文件或目录名称。
+  -l   如遇到性质为符号连接的目录，直接列出该连接所指向的原始目录。
+  -n   不在文件和目录清单加上色彩。
+  -N   直接列出文件和目录名称，包括控制字符。
+  -p   列出权限标示。
+  -P<范本样式>   只显示符合范本样式的文件或目录名称。
+  -q   用"?"号取代控制字符，列出文件和目录名称。
+  -s   列出文件或目录大小。
+  -t   用文件和目录的更改时间排序。
+  -u   列出文件或目录的拥有者名称，没有对应的名称时，则显示用户识别码。
+  -x   将范围局限在现行的文件系统中，若指定目录下的某些子目录，其存放于另一个文件系统上，则将该子目录予以排除在寻找范围外。
+
+more 类似于cat，但是分页展示文件内容
+more [-dlfpcsu ] [-num ] [+/ pattern] [+ linenum] [file ... ] 
+参数含义：
++n    从笫n行开始显示
+-n    定义屏幕大小为n行
++/pattern 在每个档案显示前搜寻该字串（pattern），然后从该字串前两行之后开始显示  
+-c    从顶部清屏，然后显示
+-d    提示“Press space to continue，’q’ to quit（按空格键继续，按q键退出）”，禁用响铃功能
+-l    忽略Ctrl+l（换页）字符
+-p    通过清除窗口而不是滚屏来对文件进行换页，与-c选项相似
+-s    把连续的多个空行显示为一行
+-u    把文件内容中的下画线去掉
+显示是常用操作命令：
+Enter    向下n行，需要定义。默认为1行
+Ctrl+F   向下滚动一屏
+空格键  向下滚动一屏
+Ctrl+B  返回上一屏
+=       输出当前行的行号
+:f     输出文件名和当前行的行号
+V      调用vi编辑器
+!命令   调用Shell，并执行命令 
+q       退出more
+如：
+more +30 -5 test.log   从30行开始每页展示5行显示test.log
+
+less 与more类似，分页展示文件内容（在less程序中而非控制行）
+less [OPTIONS] [filename]...
+-b <缓冲区大小> 设置缓冲区的大小
+-e 当文件显示结束后，自动离开
+-f 强迫打开特殊文件，例如外围设备代号、目录和二进制文件
+-g 只标志最后搜索的关键词
+-i 忽略搜索时的大小写
+-m 显示类似more命令的百分比
+-N 显示每行的行号
+-o <文件名> 将less 输出的内容在指定文件中保存起来
+-Q 不使用警告音
+-s 显示连续空行为一行
+-S 行过长时间将超出部分舍弃
+-x <数字> 将"tab"键显示为规定的数字空格
+打开文件之后的操作:
+v ： 进入编辑模式，使用配置的编辑器编辑当前文件
+当使用 less 查看大文件时，可以在任何一个位置作标记，可以通过命令导航到标有特定标记的文本位置。
+ma ： 使用 a 标记文本的当前位置
+'a ： 导航到标记 a 处
+浏览多个文件
+方式一，传递多个参数给 less，就能浏览多个文件。
+less file1 file2
+方式二，正在浏览一个文件时，使用 :e 打开另一个文件。
+less file1
+:e file2
+当打开多个文件时，使用如下命令在多个文件之间切换
+:n - 浏览下一个文件
+:p - 浏览前一个文件
+
+head 打印文件的前十行到标准输出
+head [OPTION]... [FILE]...
+-c,  --bytes=[-]K     显示每个文件的前K 字节内容；  
+                        如果附加"-"参数，则除了每个文件的最后K字节数据外  
+                        显示剩余全部内容  
+-n, --lines=[-]K      显示每个文件的前K 行内容；  
+                        如果附加"-"参数，则除了每个文件的最后K 行外显示  
+                        剩余全部内容  
+-q, --quiet, --silent 不显示包含给定文件名的文件头  
+-v, --verbose         总是显示包含给定文件名的文件头  
+K 后面可以跟乘号:  
+b 512, kB 1000, K 1024, MB 1000*1000, M 1024*1024,  
+GB 1000*1000*1000, G 1024*1024*1024, 对于T, P, E, Z, Y 同样适用。  
+如：
+head -n2 t.txt 或 head -2 t.txt    只显示前两行
+head -n-20 t.txt     除了文件末尾20行，都输出
+head -c10 t.txt      显示前10个字节
+
+tail 打印文件的后十行到标准输出
+tail [ -f ] [ -c Number | -n Number | -m Number | -b Number | -k Number ]... [FILE]...
+-f 该参数用于监视File文件增长。
+-c Number 从 Number 字节位置读取指定文件
+-n Number 从 Number 行位置读取指定文件。
+-m Number 从 Number 多字节字符位置读取指定文件，比方你的文件假设包括中文字，假设指定-c参数，可能导致截断，但使用-m则会避免该问题。
+-b Number 从 Number 表示的512字节块位置读取指定文件。
+-k Number 从 Number 表示的1KB块位置读取指定文件。
+
+ln 创建软、硬链接
+硬链接相当于同一个文件的两个名字，两个名字所代表的的文件信息完全一致，两个名称的inode也一样（每个文件都有唯一的索引节点inode），删除一个硬链接，文件的硬链接数减一，只有文件的硬链接数为0的时候文件才会被系统删除；通过一个硬链接修改移动文件，其他硬链接也都不受影响。只有超级用户才能创建目录的硬链接，也不可以在不同文件系统的文件间建立硬链接。
+软（符号）链接相当于文件的快捷方式，它本身也是个文件，只不过拥有目标文件的路径信息，如果源文件删除或移动位置，软链接会失效。任何用户可以创建指向目录的符号链接，甚至可以跨越不同机器、不同网络对文件进行链接。
+ln [OPTION]... [-T] TARGET LINK_NAME 
+ln [OPTION]... TARGET
+ln [OPTION]... TARGET... DIRECTORY 
+ln [OPTION]... -t DIRECTORY TARGET...
+-backup[=CONTROL] 为每个已存在的目标文件创建备份文件
+-b 类似–backup，但不接受任何参数
+-d, -F, –directory 创建指向目录的硬链接(只适用于超级用户,而且有不可预知的风险，慎用哦)
+-f, –force 强行删除任何已存在的目标文件（如果LINK_NAME已存在则先删除，再建立硬链接）
+-n, –no-dereference 如果目的地是一个已存在的链接至某目录的符号链接，会将该符号链接当作普通文件处理，先将该已存在的链接备份或删除
+-i, –interactive 询问是否删除目的地文件
+-s, –symbolic 创建符号链接而不是硬链接
+-t, –target-directory=目录 在指定目录中创建链接
+-T, –no-target-directory 将链接名当作普通文件(在对目录进行符号链接时要用到此选项)
+如：
+ln -f file1 file1hard   建立file1的硬链接file1hard,无论file1hard是否存在
+ln -s file1 file1symbolic  建立file1的软链接file1symbolic
+ln /home/root/dir1/* /home/root/dir2  把所有dir1中的文件在dir2中建立硬链接
+
+df 列出文件系统的整体磁盘使用量
+df [OPTION]... [FILE]...
+参数：
+-a 全部文件系统列表
+-h 方便阅读方式显示
+-H 等于“-h”，但是计算式，1K=1000，而不是1K=1024
+-i 显示inode信息
+-k 区块为1024字节
+-l 只显示本地文件系统
+-m 区块为1048576字节
+--no-sync 忽略 sync 命令
+-P 输出格式为POSIX
+--sync 在取得磁盘信息前，先执行sync命令
+-T 文件系统类型
+
+du 查看目录或文件所占用磁盘空间的大小
+du [OPTION]... [FILE]...
+选项：
+-h：以人类可读的方式显示
+-a：显示目录占用的磁盘空间大小，还要显示其下目录和文件占用磁盘空间的大小
+-s：显示目录占用的磁盘空间大小，不要显示其下子目录和文件占用的磁盘空间大小
+-c：显示几个目录或文件占用的磁盘空间大小，还要统计它们的总和
+--apparent-size：显示目录或文件自身的大小
+-l ：统计硬链接占用磁盘空间的大小
+-L：统计符号链接所指向的文件占用的磁盘空间大小
+-d --max-depth=N：规定搜寻的层数
+如：
+du -sh dir 查看某个目录的大小
+
+mount 挂接命令
+mount [-t vfstype] [-o options] device dir
+其中：
+1.-t vfstype 指定文件系统的类型，通常不必指定。mount 会自动选择正确的类型。常用类型有：
+光盘或光盘镜像：iso9660
+DOS fat16文件系统：msdos
+Windows 9x fat32文件系统：vfat
+Windows NT ntfs文件系统：ntfs
+Mount Windows文件网络共享：smbfs
+UNIX(LINUX) 文件网络共享：nfs
+2.-o options 主要用来描述设备或档案的挂接方式。常用的参数有：
+loop：用来把一个文件当成硬盘分区挂接上系统
+ro：采用只读方式挂接设备
+rw：采用读写方式挂接设备
+iocharset：指定访问文件系统所用字符集
+3.device 要挂接(mount)的设备。
+4.dir设备在系统上的挂接点(mount point)。
+
+fdisk 操控硬盘分区表
+fdisk -l 列出所有硬盘分区
+fdisk device 进入硬盘操控程序
+如：
+[root@localhost beinan]# fdisk /dev/sda
+Command (m for help): 在这里按 m ，就会输出帮助；
+Command action
+a toggle a bootable flag
+b edit bsd disklabel
+c toggle the dos compatibility flag
+d delete a partition 注：这是删除一个分区的动作；
+l list known partition types 注：l 是列出分区类型，以供我们设置相应分区的类型；
+m print this menu 注：m 是列出帮助信息；
+n add a new partition 注：添加一个分区；
+o create a new empty DOS partition table
+p print the partition table 注：p 列出分区表；
+q quit without saving changes 注：不保存退出；
+s create a new empty Sun disklabel
+t change a partition's system id 注：t 改变分区类型；
+u change display/entry units
+v verify the partition table
+w write table to disk and exit 注：把分区表写入硬盘并退出；
+x extra functionality (experts only) 注：扩展应用，专家功能；
+
+tar 打包解包
+tar [主选项+辅选项] [pathname ...]
+使用该命令时，主选项是必须要有的，它告诉tar要做什么事情，辅选项是辅助使用的，可以选用。
+主选项：
+-c --create： 创建新的档案文件。如果用户想备份一个目录或是一些文件，就要选择这个选项。相当于打包。
+-x --extract，--get： 从档案文件中释放文件。相当于拆包。
+-t --list： 列出档案文件的内容，查看已经备份了哪些文件。
+-r：向压缩归档文件末尾追加文件
+-u：更新原压缩包中的文件
+特别注意，在参数的下达中， c/x/t 仅能存在一个！不可同时存在！因为不可能同时压缩与解压缩。
+辅助选项：
+-z ：是否同时具有 gzip 的属性？亦即是否需要用 gzip 压缩或解压？ 一般格式为xx.tar.gz或xx. tgz
+-j ：是否同时具有 bzip2 的属性？亦即是否需要用 bzip2 压缩或解压？一般格式为xx.tar.bz2  
+-v ：压缩的过程中显示文件！这个常用
+-f ：使用档名，请留意，在 f 之后要立即接档名喔！它是最后一个参数，不要再加其他参数！
+-p ：使用原文件的原来属性（属性不会依据使用者而变）
+-v ：显示所有过程
+-O ：将文件解开到标准输出
+-C 目录 ：这个选项用在解压缩，若要在特定目录解压缩，可以使用这个选项。
+--exclude FILE：在压缩的过程中，不要将 FILE 打包！
+如：
+tar -cf all.tar *.jpg
+这条命令是将所有.jpg的文件打成一个名为all.tar的包。-c是表示产生新的包，-f指定包的文件名。
+tar -rf all.tar *.gif
+这条命令是将所有.gif的文件增加到all.tar的包里面去。-r是表示增加文件的意思。
+tar -uf all.tar logo.gif
+这条命令是更新原来tar包all.tar中logo.gif文件，-u是表示更新文件的意思。
+tar -tf all.tar
+这条命令是列出all.tar包中所有文件，-t是列出文件的意思
+tar -xf all.tar
+这条命令是解出all.tar包中所有文件，-x是解开的意思
+tar -xf all.tar 1.jpg  只将1.jpg解压出来
+tar -czf all.tar.gz *.jpg 打包并压缩
+tar -xzf all.tar.gz  解压解包
+注：
+*.Z         compress 程序压缩的文件；
+*.gz        gzip 程序压缩的文件；
+*.bz2       bzip2 程序压缩的文件；
+*.tar       tar 程序打包的数据，并没有压缩过；
+*.tar.gz    tar 程序打包的文件，其中并且经过 gzip 的压缩
+*.tar.bz2   tar 程序打包的文件，其中并且经过 bzip2 的压缩
+
+gzip 使用gzip程序压缩、解压文件
+gzip [ -acdfhklLnNrtvV19 ] [--rsyncable] [-S suffix] [ name ...  ]
+各选项的含义：
+-c 将输出写到标准输出上，并保留原有文件。
+-d 将压缩文件解压。
+-l 对每个压缩文件，显示下列字段： 压缩文件的大小 未压缩文件的大小 压缩比 未压缩文件的名字
+-r 递归式地查找指定目录并压缩其中的所有文件或者是解压缩。
+-t 测试，检查压缩文件是否完整。
+-v 对每一个压缩和解压的文件，显示文件名和压缩比。
+-num 用指定的数字num调整压缩的速度，
+-1或--fast表示最快压缩方法（低压缩比），
+-9或--best表示最慢压缩方法（高压缩比）。系统缺省值为6。
+如：
+gzip -v 1.txt   将1.txt压缩为1.txt.gz显示过程
+gzip -l 1.txt.gz  查看详情
+gzip -dv 1.txt.gz  解压
+gzip -dv 1.txt.gz
+
+zcat 显示压缩文件的内容
+zcat 1.txt.gz 查看内容
+
+bzip2 使用bzip2压缩、解压文件（.bz2）
+bzip2 [ -cdfkqstvzVL123456789 ] [ filenames ...  ]
+参数：
+-c或--stdout 　将压缩与解压缩的结果送到标准输出。 
+-d或--decompress 　执行解压缩。 
+-f或--force 　bzip2在压缩或解压缩时，若输出文件与现有文件同名，预设不会覆盖现有文件。若要覆盖，请使用此参数。 
+-h或--help 　显示帮助。 
+-k或--keep 　bzip2在压缩或解压缩后，会删除原始的文件。若要保留原始文件，请使用此参数。 
+-s或--small 　降低程序执行时内存的使用量。 
+-t或--test 　测试.bz2压缩文件的完整性。 
+-v或--verbose 　压缩或解压缩文件时，显示详细的信息。 
+-z或--compress 　强制执行压缩。 
+-L,--license,
+-V或--version 　显示版本信息。 
+--repetitive-best 　若文件中有重复出现的资料时，可利用此参数提高压缩效果。 
+--repetitive-fast 　若文件中有重复出现的资料时，可利用此参数加快执行速度。 
+-压缩等级n 　压缩时的区块大小。
+用法同gzip，浏览内容用bzcat
+
+每个程序运行的时候都有程序识别码PID作为标识，如果在一个程序中启动另一个程序，那么这个程序就是另一个程序的父程序，另一个程序的PPID（Parent PID）是这个程序的PID。
+job是一次bash
+ps
+jobs
+
+
+
+
+
+openssh
+xxd
+lftp
+screen 多重窗口程序
+screen [ -options ] [ cmd [ args ] ]
+screen -r [host.tty]
+
+参　　数：
+-A 　将所有的视窗都调整为目前终端机的大小。
+-d <作业名称> 　将指定的screen作业离线。
+-h <行数> 　指定视窗的缓冲区行数。
+-m 　即使目前已在作业中的screen作业，仍强制建立新的screen作业。
+-r <作业名称> 　恢复离线的screen作业。
+-R 　先试图恢复离线的作业。若找不到离线的作业，即建立新的screen作业。
+-s 　指定建立新视窗时，所要执行的shell。
+-S <作业名称> 　指定screen作业的名称。
+-v 　显示版本信息。
+-x 　恢复之前离线的screen作业。
+-ls或--list 　显示目前所有的screen作业。
+-wipe 　检查目前所有的screen作业，并删除已经无法使用的screen作业。
+
+进入screen的快捷键（C-a是同时按下Ctrl和A键，然后再按其他键）
+C-a ? -> Help，显示简单说明
+C-a c -> Create，开启新的 window
+C-a n -> Next，切换到下个 window 
+C-a p -> Previous，前一个 window 
+C-a 0..9 -> 切换到第 0..9 个window
+Ctrl+a [Space] -> 由視窗0循序換到視窗9
+C-a C-a -> 在两个最近使用的 window 间切换 
+C-a x -> 锁住当前的 window，需用用户密码解锁
+C-a d -> detach，暂时离开当前session，将目前的 screen session (可能含有多个 windows) 丢到后台执行，并会回到还没进 screen 时的状态，此时在 screen session 里    每个 window 内运行的 process (无论是前台/后台)都在继续执行，即使 logout 也不影响。 
+C-a z -> 把当前session放到后台执行，用 shell 的 fg 命令則可回去。
+C-a w -> Windows，列出已开启的 windows 有那些 
+C-a t -> Time，显示当前时间，和系统的 load 
+C-a k -> kill window，强行关闭当前的 window
+
+如：
+screen -S yourname -> 新建一个叫yourname的session，并进入该session
+screen [cmd] ->新建一个session，并执行输入的command
+C-a c -> Create，开启新的 window
+C-a n -> Next，切换到下个 window 
+C-a p -> Previous，前一个 window 
+C-a k -> kill window，强行关闭当前的 window（当所有window都被清空，则删除此session）
+C-a d -> 暂时离开当前session
+screen -ls -> 列出当前所有的session
+screen -r yourname -> 回到yourname这个session
+screen -d yourname -> 远程detach某个session
+screen -d -r yourname -> 结束当前session并回到yourname这个session
+screen -X -S [session # you want to kill] quit ->删除某个session
+
