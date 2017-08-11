@@ -1,0 +1,141 @@
+Git安装配置
+安装Git
+Linux下：sudo apt-get install git ；或者先从Git官网下载源码，然后解压，依次输入：./config，make，sudo make install这几个命令安装。
+Windows下：下载git.exe安装。
+
+配置Git用户：
+在命令行（Windows下的Git Bash）输入：
+git config --global user.name "Your Name"
+git config --global user.email email@example.com
+查看已配置用户使用：
+git config user.name
+git config user.email
+
+Git基本操作
+创建版本库：
+在一个目录创建Git版本库之后，当前目录及所有的子目录下的文件都被Git进行版本管理。
+使用命令：git init
+
+克隆版本库：
+一般我们都是直接从服务器clone一个现有的git仓库进行维护。
+使用命令：git clone <repo> <directory> 其中repo是远程仓库的地址，directory是本地download目录，如果不写默认当前目录。
+
+配置.gitignore文件：
+新建.gitignore文件，将不需要Git追踪的文件或文件夹或文件类型，写入.gitignore。所有配置文件可以直接在线浏览：https://github.com/github/gitignore 
+
+将要提交的（新）文件添加到索引库中（待提交状态）：
+使用命令：git add <file>
+例：git add . 或git add --all 或 git add -A 添加全部
+    git add -i 进入交互菜单再输入 revert，进入revert命令，再选择需要取消add的文件前的序号，进行revert add操作
+
+查看工作区当前状态：
+使用命令：git status
+
+比较版本差异：
+使用命令：git diff
+例：git diff <path>显示当前工作区内还未提交到索引库中的修改
+git diff –cached <path>或git diff –staged <path> 显示索引库中的修改
+git diff HEAD 显示提交和未提交到索引库的所有改动
+git diff branch1 branch2 显示分支1上最新的版本和分支2上最新的提交之间的差异
+git diff SHA1 SHA2 显示当前分支两个提交之间的差异
+
+提交更改：
+使用命令：git commit
+例：git commit 弹出提交说明输入页面，输入本次提交的说明，保存并退出”:wq”。
+git commit -m “commit message” 直接提交，-m后面的为提交说明（只能为一行）。
+commit message内容建议包含“类型type”，“作用范围scope”，“具体描述subject”三块。
+“类型type”包括：Feat——添加新功能（feature）
+Fix——修补bug
+Docs——只是修改文档（documentation）
+Style——修改代码形式，如formatting（不影响代码运行的变动）
+Refactor——重构（即不是新增功能，也不是修改bug的代码变动）
+Perf——代码改动增加性能（performance）
+Test——增加测试
+Chore——构建过程或辅助工具的变动
+“作用范围scope”：可能会受其影响出bug的范围。
+“具体描述subject”：具体修改的地方。
+
+回退版本：
+使用命令：git reset
+          git revert
+例：git reset --hard commitX 把commitX之后的所有提交都被删除，并回到commitX。
+git reset --hard HEAD 回到最近一次提交，工作区和索引库所有修改都没有了。
+git reset HEAD -- <File> 回退工作区或索引库内已修改的File文件，到最近提交的版本。
+git revert commitX 会重新建立一个commit，提交的内容是commitX之后所有修改的撤销，所以重新建立的提交内容跟commitX是一致的。
+
+将删除文件操作添加到索引库中：
+使用命令：git rm <File>
+如果使用系统命令删除（rm）某个文件，这只是工作区的修改，还需要进行添加索引库，并提交的操作之后才能从版本库中真正删除该文件。
+恢复误删：如果只是工作区删除，未将删除操作添加索引库，可使用命令git checkout -- File；如果已经添加索引库使用git add -i 的revert之后再git checkout -- File；如果已经commit则进行版本回退。
+git rm –cached <File> 删除索引库中的记录，相当于revert add操作。
+注：git checkout -- File 撤销文件的修改，如果文件未添加到索引库，则恢复到上一次commit的状态；如果文件被add到索引库中又做了修改，则恢复到add到索引库时的状态。
+
+将移动或重命名文件操作添加到索引库中：
+使用命令：git mv <sourcefile> <destfile> 
+相当于git rm sourcefile之后再git add destfile。
+
+查看提交历史：
+使用命令：git log
+例：git log --pretty=oneline或git log --oneline 每个commit信息都只展示一行
+git log -p -2  -p选项展开显示每次提交的内容差异，用-2则仅显示最近的两次更新
+git log --stat 展示每次提交的内容差别但仅显示简要的增改行数统计
+git log --author=XXX 查看XXX提交的内容
+
+分布式Git
+远程仓库的操作：
+使用命令：git remote
+例：git remote add <name> <url> 将远程仓库（url）在本地建立一个name的关联，在本地，name就指代远程仓库。
+git remote 显示所有远程仓库的关联
+    git remote -v 显示所有远程仓库的地址
+    git remote remove <name> 删除本地的name关联
+
+从远程仓库拉取代码：
+使用命令：git pull <远程主机名> <远程分支名>:<本地分支名>
+该命令是从远程仓库拉取最新版本，并与本地仓库进行整合，如果本地有为推送的修改，可能会造成本地文件的冲突，需要修正。git pull相当于git fetch和git merge。
+
+将本地的修改推送到远程仓库：
+使用命令：git push <远程主机名> <本地分支名>:<远程分支名>
+例：git push --all origin 将本地所有分支都推送到origin
+git push origin :master或git push origin --delete master 删除远程仓库的master分支
+git push origin tag_name 推送标签tag_name
+git push origin -tags 推送所有的标签
+
+Git分支管理 
+分支操作：
+使用命令：git branch
+例：git branch 列出本地已经存在的分支，并且在当前分支的前面加“*”号标记
+git branch -r 列出远程仓库的所有分支
+git branch -a 列出所有本地分支和远程分支
+git branch name 建立name分支
+git branch -m | -M oldbranch newbranch 重命名分支，如果newbranch名字分支已经存在，则需要使用-M强制重命名，否则，使用-m进行重命名。
+git branch -d | -D branchname 删除branchname分支
+git branch -d -r branchname 删除远程branchname分支
+
+切换分支：
+使用命令：git checkout
+例：git checkout branch1 切换到branch1分支
+git chechout -b newBranch 创建newBranch分支并切换
+
+
+合并分支：
+使用命令：git rebase或git merge
+说明：git rebase是将其他分支所做的所有修改插入本分支所有修改之前；而git merge只是将两个分支最后的两个commit合并，并分别保留两个分支上各自的提交。
+例：git merge develop 对develop分支进行合并
+git rebase origin 讲origin分支的修改“插入”当前的分支进行合并
+
+暂存工作区：
+使用命令：git stash
+例：git stash 暂存当前工作区的修改，并恢复工作区至最近的commit
+git stash list 显示所有暂存的stash
+git stash pop|apply 恢复最近暂存的stash
+
+给某个版本打上标签
+使用命令：git tag
+例：git tag 列显已有的标签
+git tag -l ‘v0.1.*’  搜索符合模式的标签
+git tag -a v1.01 -m "Relase version 1.01" <SHA1> 对某次提交打标签，默认当前，-a 是添加标签其后要跟新标签号，-m 及后面的字符串是对该标签的注释。
+git tag -d v1.01 删除标签
+git show <tag_name> 显示标签内容
+git tag <tag_name> 直接打上轻量级标签
+
+
